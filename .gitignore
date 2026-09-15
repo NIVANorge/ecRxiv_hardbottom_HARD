@@ -2,3 +2,7 @@
 
 *_cache
 *_files/
+.Rproj.user
+.Rhistory
+draft_analyses/*
+
