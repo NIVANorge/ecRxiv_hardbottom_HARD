@@ -319,7 +319,19 @@ The reporting unit is the monitoring station in a given year, and no spatial ave
 
 No transformation and no truncation are applied; the point scale bounds the result to 0–1 by construction.
 
-*Veileder 02:2018* defines a further step we do **not** take: the normalised EQR of a **water body** is the mean of its station EQRs. We stop at the station because the Vannmiljø export carries no water body identifier. `data/station_waterbody.csv` supplies one for the ØkoKyst stations, but not for the 17 Ytre Oslofjord stations, so a complete water-body series is not yet possible (§5.1).
+Above the station the indicators are aggregated in three further steps, computed in §9.6 and reported in §10:
+
+| Level | Unit averaged | Rationale |
+|---|---|---|
+| **Water body** (*vannforekomst*) | monitoring stations within it | *Veileder 02:2018* step 5 defines water body nEQR as the mean of its station EQRs. This is the management unit of the Water Framework Directive |
+| **Ecoregion** | water bodies within it | the unit the reference levels are defined for |
+| **National** | water bodies within the indicator's extent | one figure per indicator and year |
+
+The roll-up is **hierarchical and unweighted at each step**: stations to water body, then water bodies to ecoregion, then water bodies to national. Averaging water bodies rather than stations at the upper two levels matters, because water bodies hold between one and four stations; averaging stations directly would silently give a densely monitored water body several times the weight of a sparsely monitored one.
+
+*Veileder 02:2018* prescribes only the first step. The ecoregion and national levels are our own additions, so they are reported with mean, standard deviation, *n* and standard error, and the caveat in §5.2 about what that standard error can and cannot be read as.
+
+The water body for each station is not carried in the Vannmiljø registration export and is supplied from two separate sources, one per programme, in `data/station_waterbody.csv` (§7.3). It now covers **every station in both indicators**.
 
 ## 4. Reference
 ### 4.1 Reference condition
@@ -376,13 +388,15 @@ This is the single largest methodological choice in HARD_001. @lundsor2025 also 
 
 **Targeted station placement** (§2.2) means values describe the surveyed localities, not hard bottom at large.
 
-**No water-body aggregation** is possible for the Ytre Oslofjord stations, so the station-level series cannot yet be rolled up consistently.
+**Most water bodies hold a single station.** Water-body aggregation is now possible for the whole network, but where a water body has one station its "mean" is that station's value, with no spread. §10 reports how many stations each aggregate rests on, and that number should be read alongside the value.
 
 ### 5.2 Reported uncertainties
 
-What we report alongside the point estimates in @tbl-results is **descriptive, not inferential**: the range and interquartile range of station values within a year. It describes spatial variation between monitoring stations, not the uncertainty of any single station value.
+What we report alongside the point estimates is **descriptive, not inferential**. At station level (@tbl-results) it is the range and interquartile range of station values within a year. For the aggregated levels (§9.6, @tbl-ecoregion and @tbl-national) it is the mean, standard deviation, *n* and standard error of the units being averaged — stations within a water body, water bodies within an ecoregion or nationally.
 
-Each station-year yields exactly one published index value, with no replication at the station level, so there is no basis for an inferential interval. The sub-parameters that go into it are ordinal scores, and the index is their unweighted mean; a standard error of that mean would be a statement about between-species or between-sub-parameter variation, which is not a measurement error and would be misleading to present as one.
+Each station-year yields exactly one published index value, with no replication at the station level, so there is no basis for an inferential interval on a station value. The sub-parameters that go into it are ordinal scores, and the index is their unweighted mean; a standard error of that mean would be a statement about between-species variation, which is not measurement error and would be misleading to present as one.
+
+**How to read the standard errors on the aggregates.** They are computed as $sd/\sqrt{n}$ over the units averaged, so they quantify how variable condition is *between* the monitored water bodies, and how precisely their mean is pinned down. They are **not** confidence intervals for the true condition of the ecoregion. Station placement is targeted rather than random (§2.2), so the water bodies are not a probability sample of the ecoregion, and the usual inferential reading does not hold. They are still the most useful summary of spread available, and they make clear where an aggregate rests on very few units — with *n* = 1 no standard deviation exists at all, and that case is common at water-body level.
 
 The agreement between our reimplementation and the published values, reported in §9.4, is the closest thing to an accuracy estimate available: for the ØkoKyst half of HARD_001, 29 of 48 station-years agree within 0.05 EQR units, with a mean bias of +0.02.
 
@@ -468,26 +482,32 @@ msmdi_reported |>
 
 ### 7.3 Station metadata
 
-Water body and ecoregion per station, from the ØkoKyst station overview for 2026–2030. Note that the workbook's own `Vanntype` column is a **Vann-Nett** water type code, which is a different typology from the 1–6 water types the index class boundaries use — it agreed with the index water type for only 2 of 91 stations. We therefore use this file for the water body and the ecoregion only.
+Water body (*vannforekomst*) and ecoregion per station. The Vannmiljø registration export carries neither, and no single source covers both programmes, so the lookup is assembled from two:
+
+- **ØkoKyst stations** — the ØkoKyst station overview for the 2026–2030 programme period, which gives `VF navn`, the water body name.
+- **Ytre Oslofjord stations** — a station table from the Ytre Oslofjord 2024 reporting, drawn from vann-nett.no in January 2025, which gives the water body as code and name in one string; these are split into separate columns.
+
+Two cautions carried over from assembling it. First, the ØkoKyst workbook's own `Vanntype` column is a **Vann-Nett** water type code, a different typology from the 1–6 water types the index class boundaries use — it agreed with the index water type for only 2 of 91 stations, so it is kept as a separate column and never used for scaling. The Ytre Oslofjord table's `Vanntype` (S1/S2/S3) *is* the veileder water type, and it agrees with the water type implied by the reported MSMDI parameter code for 17 of 17 stations. Second, the Ytre Oslofjord stations had to be matched by name rather than by code, because the table's location codes are internal NIVA identifiers; each row records what it was matched on, and three flagged for confirmation are all corroborated by that water-type agreement.
 
 ```{r read-stationmeta}
 station_meta <- read_data("station_waterbody.csv")
 
 station_meta |>
-  summarise(
-    stations     = n(),
-    water_bodies = n_distinct(water_body, na.rm = TRUE),
-    with_ecoregion = sum(!is.na(ecoregion))
-  ) |> kable(caption = "Station metadata coverage (ØkoKyst stations only)")
+  group_by(programme, water_body_source) |>
+  summarise(stations = n(),
+            water_bodies = n_distinct(water_body, na.rm = TRUE),
+            with_water_body_code = sum(!is.na(water_body_code)),
+            .groups = "drop") |>
+  kable(caption = "Station metadata coverage. Water body codes are available for the Ytre Oslofjord source only; the ØkoKyst overview gives names.")
 ```
 
 ## 8. Spatial units
 
 The **Basic Spatial Unit** is the monitoring station: a shoreline stretch of 8–15 m together with the transect running from it down to about 30 m. Indicator values are valid, and should be interpreted, at this unit.
 
-The **Ecosystem Asset** that the station is taken to represent is the *vannforekomst* (water body), the management unit of the Water Framework Directive, and *Veileder 02:2018* defines water body status as the mean of the station values within it. `data/station_waterbody.csv` provides this mapping for the ØkoKyst stations, and is used in §10 to show what a water-body series would look like. It is not available for the Ytre Oslofjord stations, so we report at station level and treat water-body aggregation as a development need.
+The **Ecosystem Asset** that the station is taken to represent is the *vannforekomst* (water body), the management unit of the Water Framework Directive, and *Veileder 02:2018* defines water body status as the mean of the station values within it. `data/station_waterbody.csv` provides this mapping for every station in both indicators, and §9.6 uses it.
 
-The **Ecosystem Accounting Area** would be the ecoregion (Skagerrak, Nordsjøen sør/nord, Norskehavet sør/nord, Barentshavet), which is also the unit the reference levels are defined for. No masking layer of hard-bottom extent is used: the indicators describe the surveyed stations, and scaling them to area would require a coastal substrate map that is outside the scope of this submission.
+The **Ecosystem Accounting Area** is the ecoregion (Skagerrak, Nordsjøen sør/nord, Norskehavet sør/nord, Barentshavet), which is also the unit the reference levels are defined for. A national figure is reported as well, but it should be read as a summary of the monitored water bodies rather than of Norwegian hard bottom: no masking layer of hard-bottom extent is used, so the aggregates are not area-weighted. Doing that would require a coastal substrate map, which is outside the scope of this submission.
 
 ## 9. Analyses
 
@@ -887,11 +907,9 @@ bind_rows(
   kable(caption = "Sea urchin abundance at the indicator stations. Where urchins are spredt or more, the indicator value should be read as an upper bound.")
 ```
 
-## 10. Results
+### 9.6 Spatial aggregation
 
-<!--#
-Repeat the final results here. Typically this is a map or table of indicator values.
--->
+The two indicators are first stacked into one station-level table. Only HARD_002 stations that actually yielded a value are carried through.
 
 ```{r results-table}
 results <- bind_rows(
@@ -905,7 +923,82 @@ results <- bind_rows(
 )
 ```
 
-The headline figures, with the descriptive spread described in §5.2:
+The station values are then rolled up in three steps, following §3.5: stations to water body, water bodies to ecoregion, and water bodies to a national figure. Each step is an unweighted arithmetic mean of the level below, and each reports mean, standard deviation, *n* and standard error. §5.2 sets out how to read the standard error.
+
+```{r aggregation-helper}
+# Summary statistics for one level of aggregation. sd and se are NA when a
+# single unit is being "averaged", which is the honest result - there is no
+# spread to report - and is common at water-body level.
+summarise_level <- function(df, value, ...) {
+  df |>
+    group_by(...) |>
+    summarise(
+      n    = dplyr::n(),
+      mean = mean({{ value }}),
+      sd   = if (dplyr::n() > 1) sd({{ value }}) else NA_real_,
+      .groups = "drop"
+    ) |>
+    mutate(se = sd / sqrt(n))
+}
+```
+
+Stations are joined to their water body first. The join must not drop or duplicate a station-year, so that is asserted rather than assumed.
+
+```{r aggregate-waterbody}
+station_values <- results |>
+  left_join(station_meta |> select(Vannlokalitet_kode, water_body,
+                                   water_body_code),
+            by = "Vannlokalitet_kode")
+
+stopifnot(
+  nrow(station_values) == nrow(results),        # join did not duplicate
+  all(!is.na(station_values$water_body))        # every station has a water body
+)
+
+# Level 1: water body = mean of its stations (Veileder 02:2018 step 5)
+agg_waterbody <- station_values |>
+  summarise_level(eqr, indicatorID, index, ecoregion, year,
+                  water_body_code, water_body) |>
+  rename(stations = n, neqr = mean) |>
+  mutate(condition_class = neqr_class(neqr))
+
+# Level 2: ecoregion = mean of its water bodies
+agg_ecoregion <- agg_waterbody |>
+  summarise_level(neqr, indicatorID, index, ecoregion, year) |>
+  rename(water_bodies = n, neqr = mean) |>
+  mutate(condition_class = neqr_class(neqr))
+
+# Level 3: national = mean of all water bodies in the indicator's extent
+agg_national <- agg_waterbody |>
+  summarise_level(neqr, indicatorID, index, year) |>
+  rename(water_bodies = n, neqr = mean) |>
+  mutate(condition_class = neqr_class(neqr))
+
+tibble(
+  level = c("station-year", "water body-year", "ecoregion-year", "national-year"),
+  rows  = c(nrow(station_values), nrow(agg_waterbody),
+            nrow(agg_ecoregion), nrow(agg_national))
+) |> kable(caption = "Rows at each level of aggregation")
+```
+
+How many stations each water-body value rests on determines whether it carries any spread at all:
+
+```{r tbl-wb-depth}
+agg_waterbody |>
+  count(indicatorID, stations, name = "water_body_years") |>
+  rename(`stations in the water body` = stations) |>
+  kable(caption = "Number of stations behind each water-body value. Where this is 1, the water-body mean is a single station value and no standard deviation exists.")
+```
+
+## 10. Results
+
+<!--#
+Repeat the final results here. Typically this is a map or table of indicator values.
+-->
+
+### 10.0 Station level
+
+The station values assembled in §9.6, with the descriptive spread described in §5.2:
 
 ```{r tbl-results}
 #| tbl-cap: "Indicator values by indicator and year. Spread is between monitoring stations, not uncertainty of a station value."
@@ -978,18 +1071,73 @@ results |>
         legend.position = "bottom")
 ```
 
-Finally, what a water-body series would look like for the part of the network where the mapping exists. This is the aggregation *Veileder 02:2018* actually prescribes, and it is shown here as a demonstration rather than as the indicator, because the mapping is missing for the Ytre Oslofjord stations.
+### 10.1 Water body
+
+The aggregation *Veileder 02:2018* prescribes. Shown for 2024, the one year both indicators cover; the full series for all years is in the exported file (§11).
+
+In practice the monitoring network puts **one station in most water bodies** — 73 of 78 water-body-years for HARD_001 and 11 of 12 for HARD_002 — so most water-body values are a single station value and carry no spread. The aggregation is still worth doing, because it prevents the handful of water bodies with two stations from being double-counted at the levels above, but it adds little information of its own.
 
 ```{r tbl-waterbody}
-#| tbl-cap: "Water-body means for 2024, for stations where a water body mapping exists. Not the indicator value; see section 8."
-results |>
+#| tbl-cap: "Water-body nEQR for 2024. `stations` is the number of monitoring stations averaged; sd and se are empty where that is 1."
+agg_waterbody |>
   filter(year == 2024) |>
-  left_join(station_meta |> select(Vannlokalitet_kode, water_body), by = "Vannlokalitet_kode") |>
-  filter(!is.na(water_body)) |>
-  group_by(indicatorID, water_body) |>
-  summarise(stations = n(), neqr = round(mean(eqr), 3), .groups = "drop") |>
-  mutate(condition_class = neqr_class(neqr)) |>
+  transmute(indicatorID, ecoregion, water_body_code, water_body, stations,
+            neqr = round(neqr, 3), sd = round(sd, 3), se = round(se, 3),
+            condition_class) |>
   arrange(indicatorID, neqr) |>
+  kable()
+```
+
+### 10.2 Ecoregion
+
+Means over water bodies, which is why *n* here is a count of water bodies rather than stations.
+
+```{r tbl-ecoregion}
+#| tbl-cap: "Ecoregion nEQR. `water_bodies` is the number of water bodies averaged."
+agg_ecoregion |>
+  transmute(indicatorID, index, ecoregion, year, water_bodies,
+            neqr = round(neqr, 3), sd = round(sd, 3), se = round(se, 3),
+            condition_class) |>
+  arrange(indicatorID, ecoregion, year) |>
+  kable()
+```
+
+```{r fig-ecoregion}
+#| fig-cap: "Ecoregion nEQR with one standard error. The dashed line is the good/moderate boundary. Point size shows how many water bodies each mean rests on; where that is small the mean is poorly determined."
+#| fig-width: 7.5
+#| fig-height: 4
+#| warning: false
+agg_ecoregion |>
+  mutate(ecoregion = fct_reorder(ecoregion, neqr)) |>
+  ggplot(aes(neqr, ecoregion, colour = factor(year))) +
+  geom_vline(xintercept = 0.6, linetype = "dashed",
+             colour = "grey45", linewidth = 0.4) +
+  geom_errorbarh(aes(xmin = neqr - se, xmax = neqr + se),
+                 height = 0, linewidth = 0.6, na.rm = TRUE) +
+  geom_point(aes(size = water_bodies)) +
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+  scale_size_area(max_size = 4.5, name = "Water bodies") +
+  scale_colour_viridis_d(option = "mako", end = 0.8, name = "Year") +
+  facet_wrap(~ indicatorID, scales = "free_y", ncol = 1) +
+  labs(x = "nEQR", y = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+```
+
+### 10.3 National
+
+One figure per indicator and year, averaged over water bodies.
+
+Note that for **HARD_001 the national figure is identical to the Skagerrak ecoregion figure**, because the index is only defined for that ecoregion (§4.2.1). That is not a coding error; it is a reminder that "national" here means the monitored water bodies within each indicator's own extent, and that neither indicator covers the coast on its own.
+
+```{r tbl-national}
+#| tbl-cap: "National nEQR per indicator and year, as a mean over the monitored water bodies. Not area-weighted; see section 8."
+agg_national |>
+  transmute(indicatorID, index, year, water_bodies,
+            neqr = round(neqr, 3), sd = round(sd, 3), se = round(se, 3),
+            condition_class) |>
+  arrange(indicatorID, year) |>
   kable()
 ```
 
@@ -999,24 +1147,28 @@ results |>
 Optional: Display the code (don't execute it) or the workflow for exporting the indicator values to file.
 -->
 
-The station-level indicator values, with the flags that qualify them, would be exported as follows. Coordinates are UTM33 (EPSG:25833) as supplied by Vannmiljø.
+Four files would be written: the station values with the flags that qualify them, and the three aggregated levels. Coordinates are UTM33 (EPSG:25833) as supplied by Vannmiljø.
 
 ```{r export}
 #| eval: false
-export <- results |>
+# Station level, with the caveat flags attached
+export_station <- station_values |>
   left_join(stations |> select(Vannlokalitet_kode, utm33_x, utm33_y),
-            by = "Vannlokalitet_kode") |>
-  left_join(station_meta |> select(Vannlokalitet_kode, water_body),
             by = "Vannlokalitet_kode") |>
   left_join(hard002 |> select(Vannlokalitet_kode, year, flag_old_point_scale,
                               flag_partial_sjosone),
             by = c("Vannlokalitet_kode", "year"))
 
-readr::write_csv(export, "../data/hard_001_002_indicator_values.csv")
+readr::write_csv(export_station, "../data/hard_001_002_station_values.csv")
+readr::write_csv(agg_waterbody,  "../data/hard_001_002_waterbody_values.csv")
+readr::write_csv(agg_ecoregion,  "../data/hard_001_002_ecoregion_values.csv")
+readr::write_csv(agg_national,   "../data/hard_001_002_national_values.csv")
 
-# As a georeferenced point layer
-sf::st_as_sf(export, coords = c("utm33_x", "utm33_y"), crs = 25833) |>
-  sf::st_write("../data/hard_001_002_indicator_values.gpkg", delete_dsn = TRUE)
+# Station values as a georeferenced point layer. The aggregated levels are not
+# exported as geometry: doing so would need the Vann-Nett water body polygons,
+# which are not included here.
+sf::st_as_sf(export_station, coords = c("utm33_x", "utm33_y"), crs = 25833) |>
+  sf::st_write("../data/hard_001_002_station_values.gpkg", delete_dsn = TRUE)
 ```
 
 ## 12. Author contributions
