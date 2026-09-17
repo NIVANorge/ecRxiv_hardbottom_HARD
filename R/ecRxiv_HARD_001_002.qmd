@@ -303,12 +303,12 @@ A weaker overlap exists with eelgrass indicators, which respond to the same pres
 
 The pressure the indices are designed for is eutrophication: nutrient inputs from agriculture, aquaculture, and wastewater reduce light by increasing plankton biomass and by promoting filamentous algal mats that overgrow perennial species.
 
-Several other factors change the metric without being eutrophication, and this is the main interpretive difficulty:
+Several other factors besides eutrophication affect macroalgal communities, and this is the main interpretive difficulty:
 
-- **Sea urchin grazing** can remove the macroalgal community outright. Because grazing suppresses the very filamentous-algae response the index reads as a eutrophication signal, a heavily grazed station can score deceptively well on parts of the index while being in poor condition. A correction for this was proposed by @fagerli2023 and is included in the revised method, but we could not implement it (§5.1).
-- **Natural turbidity** from river runoff and resuspension reduces light without any anthropogenic cause. Water type partly accounts for this, since reference depths differ between exposed coast and freshwater-influenced fjord.
-- **Substrate**: where hard bottom gives way to sediment above the light-limited depth, the recorded limit reflects the substrate, not the light. The method excludes such observations.
-- **Climate-driven loss of sugar kelp** in southern Norway, driven by warming and reduced water exchange, affects one of the nine MSMDI species.
+- **Sea urchin grazing** can remove the entire macroalgal community and is certainly a negative factor. Also, it may mask effects of eutrophication on the indices by removing algal species that indicate eutrophication as well as filamentous algae. A correction for this was proposed by @fagerli2023 and is included in the revised method. The grazing index is binary (substantial or not substantial grazing). It is applied after nEQR has been calculated and the station has been classified. if there is substantial grazing, stations classified as "very good" or "good" should be downgraded. As it is not specifically linked to the numerical nEQR, we have not included it.  
+- **Natural turbidity** from river runoff and resuspension reduces light without any anthropogenic cause. Water type partly accounts for this, since reference depths differ between exposed coast and freshwater-influenced fjord.  
+- **Substrate**: where hard bottom gives way to sediment above the light-limited depth, the recorded limit reflects the substrate, not the light. The method excludes such stations.  
+- **Climate-driven loss of sugar kelp** in southern Norway, driven by warming and reduced water exchange, affects one of the nine MSMDI species.  
 
 ### 3.5 Spatial aggregation
 
@@ -319,7 +319,7 @@ The reporting unit is the monitoring station in a given year, and no spatial ave
 
 No transformation and no truncation are applied; the point scale bounds the result to 0–1 by construction.
 
-Above the station the indicators are aggregated in three further steps, computed in §9.6 and reported in §10:
+Above the station level, the indicators are spatially aggregated in three further steps, computed in §9.6 and reported in §10:
 
 | Level | Unit averaged | Rationale |
 |---|---|---|
@@ -327,35 +327,35 @@ Above the station the indicators are aggregated in three further steps, computed
 | **Ecoregion** | water bodies within it | the unit the reference levels are defined for |
 | **National** | water bodies within the indicator's extent | one figure per indicator and year |
 
-The roll-up is **hierarchical and unweighted at each step**: stations to water body, then water bodies to ecoregion, then water bodies to national. Averaging water bodies rather than stations at the upper two levels matters, because water bodies hold between one and four stations; averaging stations directly would silently give a densely monitored water body several times the weight of a sparsely monitored one.
+The aggregation is hierarchical and unweighted at each step: stations to water body, then water bodies to ecoregion, then water bodies to national. Averaging water bodies rather than stations at the upper two levels matters, because water bodies hold between one and four stations; averaging stations directly would silently give a densely monitored water body several times the weight of a sparsely monitored one. 
 
-*Veileder 02:2018* prescribes only the first step. The ecoregion and national levels are our own additions, so they are reported with mean, standard deviation, *n* and standard error, and the caveat in §5.2 about what that standard error can and cannot be read as.
+*Veileder 02:2018* prescribes only the first step, while the ecoregion and national aggregation are added for the sake of this condition indicator. This allow us to report the indicators with mean, standard deviation, and standard error (uncertainty of the mean). See the caveat in §5.2 about interpretation of the standard error.  
 
-The water body for each station is not carried in the Vannmiljø registration export and is supplied from two separate sources, one per programme, in `data/station_waterbody.csv` (§7.3). It now covers **every station in both indicators**.
+The water body for each station is not carried in the Vannmiljø registration export and is supplied from two separate sources, one per programme, in `data/station_waterbody.csv` (§7.3). It now covers every station in both indicators.
 
 ## 4. Reference
 ### 4.1 Reference condition
 
-The reference condition is the macroalgal community expected at a station of its water type under **minimal human influence**: perennial algae extending to the depth that natural light attenuation allows, a species composition dominated by late-successional perennials, and no mass occurrence of filamentous algae.
+The reference condition is the macroalgal community expected at a station of its water type under minimal human influence: perennial algae extending to the depth that natural light attenuation allows, a species composition dominated by late-successional perennials, and no mass occurrence of filamentous algae.
 
-It is defined per **ecoregion and water type** rather than globally, because natural light climate, salinity and wave exposure differ enormously between an exposed Skagerrak coast and a freshwater-influenced fjord in Troms. Reference depths were derived from historical records, data from unimpacted areas, and expert judgement [@gundersen2017].
+It is defined per ecoregion and water type rather than globally, because natural light climate, salinity and wave exposure differ enormously between an exposed Skagerrak coast and a freshwater-influenced fjord in Troms. Reference depths were derived from historical records, data from unimpacted areas, and expert judgement [@gundersen2017].
 
 ### 4.2 Reference levels
 
-Both indices are normalised on a **points scale anchored at both ends**. X~100~ is the reference depth for the taxon and water type, which earns the maximum score; X~0~ is absence of the taxon (or, for filamentous algae, the largest depth extent class), which earns zero. The EQR is the mean score divided by the maximum score of 5, so the indicator is bounded 0–1 with 1 as reference condition.
+Both indices are normalised on a points scale anchored at both ends. X~100~ is the reference depth for the taxon and water type, which earns the maximum score; X~0~ is absence of the taxon (or, for filamentous algae, the largest depth extent class), which earns zero. The EQR is the mean score divided by the maximum score of 5, so the indicator is bounded 0–1 with 1 as reference condition.
 
-The two indices use **different point scales**, which matters when comparing them:
+The two indices use different point scales, which matters when comparing them:
 
 - **HARD_001 (MSMDI)** scores 5, 4, 3, 2 or 0 points per species, from four depth thresholds per species and water type. Zero is given only if the species was recorded at the station previously but not in the survey year.
 - **HARD_002 (Komboindeksen)** scores 5, 4.5, 3.5, 2.5, 1.5 or 0 points per sub-parameter, from five thresholds.
 
-X~60~, the good/moderate boundary, is 0.6 on the EQR scale for both, which is the WFD boundary. The five status classes are equal 0.2-wide bands.
+X~60~, the good/moderate boundary, is 0.6 on the EQR scale for both (and the main threshold for WFD). The five status classes are equal 0.2-wide bands.
 
 The full threshold tables are reproduced in the analysis code in §9, with their sources: *Veileder 02:2018* Tables 9.4–9.6 for HARD_001, and Fagerli et al. (2025) Tables 3–6 for HARD_002 [@fagerli2025].
 
 #### 4.2.1 Spatial resolution and validity
 
-Reference levels vary by **ecoregion and water type**, and are therefore valid for scaling a value measured at a single station, provided the station's water type is known. This is convenient — no prior spatial aggregation is needed before scaling — but it makes the water type a critical piece of metadata, and it is not carried in the Vannmiljø registration export. We recover it from the reported index parameter code, which encodes it (`MSMDI3` means water type 3), and confirm it against the ØkoKyst Skagerrak report.
+Reference levels vary by ecoregion and water type, and are therefore valid for scaling a value measured at a single station, provided the station's water type is known. This is convenient — no prior spatial aggregation is needed before scaling — but it makes the water type a critical piece of metadata, and it is not carried in the Vannmiljø registration export. We recover it from the reported index parameter code, which encodes it (`MSMDI3` means water type 3), and confirm it against the ØkoKyst Skagerrak report.
 
 Coverage of the reference levels is incomplete, and the gaps are filled by substitution in the source reports rather than by us:
 
@@ -367,36 +367,32 @@ Coverage of the reference levels is incomplete, and the gaps are filled by subst
 
 The largest uncertainties here are not statistical. They concern which published number to trust and how much of the prescribed method could actually be executed.
 
-**Two official MSMDI series disagree, and the reason is documented.** For the ØkoKyst Skagerrak stations, the values held in Vannmiljø and the values published in the ØkoKyst Skagerrak 2024 report differ systematically: the report is on average 0.12 lower, up to 0.35, and **27 of 42 overlapping station-years fall in a different condition class** depending on which is used.
+**1.** For the ØkoKyst Skagerrak stations, the MSMDI values held in Vannmiljø and the values published in the ØkoKyst Skagerrak 2024 report differ systematically: the report is on average 0.12 lower, up to 0.35, and 27 of 42 overlapping station-years fall in a different condition class depending on which is used.
 
-@lundsor2025 address this directly. The cause is the rule that gives 0 points to a species previously recorded at a station but not refound in the survey year. How far back "previously" reaches depends on what data exist:
+@lundsor2025 address this directly. The cause is the rule that gives 0 points to a species previously recorded at a station but not refound in the survey year. However, how far back "previously" reaches depends on what data exist:
 
-- Vannmiljø computes MSMDI automatically from reported lower growth depths and **cannot look further back than the earliest registrations in the system** — about 2009 for most stations, but not all, and in some years only EQR values were reported rather than the underlying depths.
-- NIVA changed practice in report M-1336|2019 to look only **three years back**, which the report notes yields potentially higher MSMDI values and a better status class than the *Veileder 02:2018* method would.
+- Vannmiljø computes MSMDI automatically from reported lower growth depths and cannot look further back than the earliest registrations in the system; about 2009 for most stations, but not all. In some years only EQR values were reported rather than the underlying depths.
+- NIVA changed practice in report M-1336|2019 to look only three years back, which the report notes yields potentially higher MSMDI values and a better status class than the *Veileder 02:2018* method would.  
 
-The report states that its **2021–2024 values are computed by the current method using previous occurrences registered in Vannmiljø, i.e. back to 2009 for most stations**. That is the longest lookback available, so we use the report series. It is consistent with our own reimplementation, which can only look back to 2021 and accordingly sits slightly *above* the report (mean bias +0.02) while sitting well below Vannmiljø (−0.10); fewer years of lookback means fewer zeros and a higher score. §9.4 quantifies this.
+The report states that its 2021–2024 values are computed by the current method using previous occurrences registered in Vannmiljø, i.e. back to 2009 for most stations. That is the longest lookback available, so we use the report series. It is consistent with our own reimplementation, where we for practical reasons only look back to 2021, and accordingly our values are slightly above the report (mean bias +0.02) while sitting well below Vannmiljø (−0.10); fewer years of lookback means fewer zeros and a higher score. This affects our quality check by recalculation, but as we have used the published values, the indicator is not affected. §9.4 quantifies this.
 
 This is the single largest methodological choice in HARD_001. @lundsor2025 also note that a revision of the calculation methodology is in preparation, and recommend that an agreed reference list of historical species occurrences be established and made available to Vannmiljø's automatic calculation. Until that happens, MSMDI values from different sources and periods are not strictly comparable.
 
-**HARD_002 never uses all three sublittoral sub-parameters.** The depth extent of filamentous algal mats is not reported to Vannmiljø for any station in any year, so every value rests on the two depth-limit sub-parameters plus a filamentous-algae score taken from the report tables. The method permits averaging over the sub-parameters that are measurable, stating explicitly that statistical power is reduced.
+**2)** The depth extent of filamentous algal mats is not reported to Vannmiljø for any station in any year, so we have used the EQR for the filamentous-algae score directly, instead of calculating it ourself. This was used to calculate the EQR for the sublittoral (sjøsone) which again was used to calculate the combination index. 
 
-**HARD_002 mixes two point scales.** Nordsjøen and Norskehavet sør use the revised half-point scale of @fagerli2025; Norskehavet nord and Barentshavet use an older integer scale. Five of the 13 stations with a value are on the older scale — 10 of the 18 stations surveyed. Values are not strictly comparable between these regions, and each row in the data records which scale applies.
+**3)** HARD_002 mixes two point scales. Nordsjøen and Norskehavet sør use the revised half-point scale of @fagerli2025; Norskehavet nord and Barentshavet use an older integer scale. Five of the 13 stations with a value are on the older scale — 10 of the 18 stations surveyed. Values are not strictly comparable between these regions, and each row in the data records which scale applies.
 
-**The sea urchin grazing correction is not implemented, and cannot be approximated well.** The method downgrades a station by one class where urchins are at least "spredt" over more than 5 m of grazed depth. Vannmiljø has urchin abundance but no parameter for grazed depth extent, so the correction cannot be computed. We flag urchin abundance in §9.5 instead, but the flag is weak evidence: **77 of the 83 HARD_001 station-years and 10 of the 13 HARD_002 stations have no urchin record at all**, because the relevant parameter is only registered at a subset of stations. Absence of a flag therefore does not mean absence of grazing.
+**3).** The sea urchin grazing correction is not implemented, and cannot be approximated well. Vannmiljø has urchin abundance but no parameter for grazed depth extent, so the correction cannot be computed. We flag urchin abundance in §9.5 instead, but the flag is weak evidence: **77 of the 83 HARD_001 station-years and 10 of the 13 HARD_002 stations have no urchin record at all**, because the relevant parameter is only registered at a subset of stations. Absence of a flag therefore does not mean absence of grazing.
 
-**The "disappeared species" rule cannot be applied fully in our reimplementation.** We can only see absences within the 2021–2024 extract, whereas the published values use occurrences back to about 2009. Species lost earlier are invisible to us and are simply excluded rather than scored zero, which biases our reimplementation upward by roughly the +0.02 seen in §9.4. This affects the quality check, not the published values. It is the same mechanism that @lundsor2025 identify as the source of the discrepancy between series, so it is a property of the index as operated nationally rather than a defect of this workflow.
-
-**Targeted station placement** (§2.2) means values describe the surveyed localities, not hard bottom at large.
-
-**Most water bodies hold a single station.** Water-body aggregation is now possible for the whole network, but where a water body has one station its "mean" is that station's value, with no spread. §10 reports how many stations each aggregate rests on, and that number should be read alongside the value.
+**3)** The number of stations is low, leading to a large statistical uncertainty (i.e. standard errors). Also, most water bodies hold a single station. The position of the stations is hand-picked to be representative (§2.2), meaning that applying classical statistics to evaluyate hard bottom at large doesn't really apply, but the observed  status and trends can be assumed to be representative.  
 
 ### 5.2 Reported uncertainties
 
-What we report alongside the point estimates is **descriptive, not inferential**. At station level (@tbl-results) it is the range and interquartile range of station values within a year. For the aggregated levels (§9.6, @tbl-ecoregion and @tbl-national) it is the mean, standard deviation, *n* and standard error of the units being averaged — stations within a water body, water bodies within an ecoregion or nationally.
+What we report alongside the point estimates is descriptive, not inferential. At station level (@tbl-results) it is the range and interquartile range of station values within a year. For the aggregated levels (§9.6, @tbl-ecoregion and @tbl-national) it is the mean, standard deviation, *n* and standard error of the units being averaged — stations within a water body, water bodies within an ecoregion or nationally.
 
 Each station-year yields exactly one published index value, with no replication at the station level, so there is no basis for an inferential interval on a station value. The sub-parameters that go into it are ordinal scores, and the index is their unweighted mean; a standard error of that mean would be a statement about between-species variation, which is not measurement error and would be misleading to present as one.
 
-**How to read the standard errors on the aggregates.** They are computed as $sd/\sqrt{n}$ over the units averaged, so they quantify how variable condition is *between* the monitored water bodies, and how precisely their mean is pinned down. They are **not** confidence intervals for the true condition of the ecoregion. Station placement is targeted rather than random (§2.2), so the water bodies are not a probability sample of the ecoregion, and the usual inferential reading does not hold. They are still the most useful summary of spread available, and they make clear where an aggregate rests on very few units — with *n* = 1 no standard deviation exists at all, and that case is common at water-body level.
+The standard errors on the aggregates are computed as $sd/\sqrt{n}$ over the units averaged, so they quantify how variable condition is between the monitored water bodies, and the precision of the mean. As station placement is targeted, not random, one should interpret the standard error with care. As the water bodies are not a probability sample of the ecoregion, one should for instance not state that the confidence interval is the mean +/- 2 standard errors; that would be mis-application of confidence interval as a statistcal term. The standard errors are still the most useful summary of spread available, and they make clear where an aggregate rests on very few units — with *n* = 1 no standard deviation exists at all, and that case is common at water-body level.
 
 The agreement between our reimplementation and the published values, reported in §9.4, is the closest thing to an accuracy estimate available: for the ØkoKyst half of HARD_001, 29 of 48 station-years agree within 0.05 EQR units, with a mean bias of +0.02.
 
@@ -482,12 +478,7 @@ msmdi_reported |>
 
 ### 7.3 Station metadata
 
-Water body (*vannforekomst*) and ecoregion per station. The Vannmiljø registration export carries neither, and no single source covers both programmes, so the lookup is assembled from two:
-
-- **ØkoKyst stations** — the ØkoKyst station overview for the 2026–2030 programme period, which gives `VF navn`, the water body name.
-- **Ytre Oslofjord stations** — a station table from the Ytre Oslofjord 2024 reporting, drawn from vann-nett.no in January 2025, which gives the water body as code and name in one string; these are split into separate columns.
-
-Two cautions carried over from assembling it. First, the ØkoKyst workbook's own `Vanntype` column is a **Vann-Nett** water type code, a different typology from the 1–6 water types the index class boundaries use — it agreed with the index water type for only 2 of 91 stations, so it is kept as a separate column and never used for scaling. The Ytre Oslofjord table's `Vanntype` (S1/S2/S3) *is* the veileder water type, and it agrees with the water type implied by the reported MSMDI parameter code for 17 of 17 stations. Second, the Ytre Oslofjord stations had to be matched by name rather than by code, because the table's location codes are internal NIVA identifiers; each row records what it was matched on, and three flagged for confirmation are all corroborated by that water-type agreement.
+Water body (*vannforekomst*), ecoregion and water type per station. The Vannmiljø registration export doesn't carry these, so the lookup of is assembled from lookup files supplied separately.  
 
 ```{r read-stationmeta}
 station_meta <- read_data("station_waterbody.csv")
@@ -503,9 +494,9 @@ station_meta |>
 
 ## 8. Spatial units
 
-The **Basic Spatial Unit** is the monitoring station: a shoreline stretch of 8–15 m together with the transect running from it down to about 30 m. Indicator values are valid, and should be interpreted, at this unit.
+The **monitoring station** is the basic unit: a shoreline stretch of 8–15 m together with the transect running from it down to about 30 m. Indicator values are valid, and should be interpreted, at this unit.
 
-The **Ecosystem Asset** that the station is taken to represent is the *vannforekomst* (water body), the management unit of the Water Framework Directive, and *Veileder 02:2018* defines water body status as the mean of the station values within it. `data/station_waterbody.csv` provides this mapping for every station in both indicators, and §9.6 uses it.
+The ecosystem asset that the station is taken to represent is the *vannforekomst* (water body), the management unit of the Water Framework Directive, and *Veileder 02:2018* defines water body status as the mean of the station values within it. `data/station_waterbody.csv` provides this mapping for every station in both indicators, and §9.6 uses it.
 
 The **Ecosystem Accounting Area** is the ecoregion (Skagerrak, Nordsjøen sør/nord, Norskehavet sør/nord, Barentshavet), which is also the unit the reference levels are defined for. A national figure is reported as well, but it should be read as a summary of the monitored water bodies rather than of Norwegian hard bottom: no masking layer of hard-bottom extent is used, so the aggregates are not area-weighted. Doing that would require a coastal substrate map, which is outside the scope of this submission.
 
@@ -570,9 +561,9 @@ glimpse(fjaeresone)
 
 ### 9.2 HARD_001 — lower growth limit index (MSMDI)
 
-MSMDI is the mean score of nine easily recognisable erect algae, scored by the depth at which each stops growing. The nine species occupy **eight scoring rows**, because krusblekke (*Phyllophora pseudoceranoides*) and hummerblekke (*Coccotylus truncatus*) share a row and the deeper of the two is used.
+MSMDI is the mean score of nine easily recognisable erect algae, scored by the depth at which each stops growing. The nine species occupy eight scoring rows, because krusblekke (*Phyllophora pseudoceranoides*) and hummerblekke (*Coccotylus truncatus*) share a row and the deeper of the two is used.
 
-The indicator value is a **published** index value, not our own computation, and the source is chosen per programme for the reason given in §5.1:
+The indicator value is a published index value, not our own computation, and the source is chosen per programme for the reason given in §5.1:
 
 ```{r hard001}
 # ØkoKyst: the Skagerrak 2024 report series. Lundsør et al. (2025) state that
@@ -646,7 +637,7 @@ $$\text{nEQR}_{\text{Kombo}} = \frac{\text{EQR}_{\text{fjæresone}} + \text{EQR}
 
 Each sublittoral sub-parameter is scored 5, 4.5, 3.5, 2.5, 1.5 or 0 points from depth thresholds specific to ecoregion and water type, then divided by the reference score of 5. The kelp sub-parameter uses *Laminaria hyperborea* in exposed water type 1 and the deeper of *L. hyperborea* and *Saccharina latissima* in water types 2–4; the filamentous-algae sub-parameter is inverse, so zero depth extent is best.
 
-We recompute the index rather than use the published value, because the four regional reports are **not mutually consistent**: they differ in which littoral value they feed in and in rounding. Recomputing applies one method to all four ecoregions. The sub-parameter EQRs themselves are taken as scored in the reports, since the underlying depths in metres are not available.
+We recompute the index rather than use the published value, because the four regional reports are not mutually consistent: they differ in which littoral value they feed in and in rounding. Recomputing applies one method to all four ecoregions. The sub-parameter EQRs themselves are taken as scored in the reports, since the underlying depths in metres are not available.
 
 ```{r hard002}
 # Aggregation functions, exactly as in Fagerli et al. (2025) step 6-7. Both drop
@@ -1075,7 +1066,7 @@ results |>
 
 The aggregation *Veileder 02:2018* prescribes. Shown for 2024, the one year both indicators cover; the full series for all years is in the exported file (§11).
 
-In practice the monitoring network puts **one station in most water bodies** — 73 of 78 water-body-years for HARD_001 and 11 of 12 for HARD_002 — so most water-body values are a single station value and carry no spread. The aggregation is still worth doing, because it prevents the handful of water bodies with two stations from being double-counted at the levels above, but it adds little information of its own.
+In practice the monitoring network puts one station in most water bodies — 73 of 78 water-body-years for HARD_001 and 11 of 12 for HARD_002 — so most water-body values are a single station value and carry no spread. The aggregation is still worth doing, because it prevents the handful of water bodies with two stations from being double-counted at the levels above, but it adds little information of its own.
 
 ```{r tbl-waterbody}
 #| tbl-cap: "Water-body nEQR for 2024. `stations` is the number of monitoring stations averaged; sd and se are empty where that is 1."
@@ -1129,7 +1120,7 @@ agg_ecoregion |>
 
 One figure per indicator and year, averaged over water bodies.
 
-Note that for **HARD_001 the national figure is identical to the Skagerrak ecoregion figure**, because the index is only defined for that ecoregion (§4.2.1). That is not a coding error; it is a reminder that "national" here means the monitored water bodies within each indicator's own extent, and that neither indicator covers the coast on its own.
+Note that for HARD_001, the national figure is identical to the Skagerrak ecoregion figure, because the index is only defined for that ecoregion (§4.2.1)..
 
 ```{r tbl-national}
 #| tbl-cap: "National nEQR per indicator and year, as a mean over the monitored water bodies. Not area-weighted; see section 8."
