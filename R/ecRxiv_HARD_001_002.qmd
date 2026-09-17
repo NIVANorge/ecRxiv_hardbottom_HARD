@@ -216,19 +216,19 @@ With a maximum of 300 words, describe the indicator in general terms as you woul
  -->
 
 1. **Background and rationale**:
-Seaweeds and kelp anchored to rock cannot move. How deep they grow is set by how much light reaches the seabed, and light is reduced by nutrient enrichment, which fuels plankton blooms and fast-growing filamentous algae that smother the larger, slower perennials. A shallower lower growth limit, and a shift from perennial to opportunistic species, are therefore direct signals of eutrophication on hard bottom. Two indicators are documented here because Norway uses two different indices: the lower growth limit index (MSMDI) in the Skagerrak, and the combined index (Komboindeksen) along the rest of the coast.
+As sessile organisms, seaweeds and kelp are sensitive to changes in light conditions. How deep they grow is set by how much light reaches the seabed, and light penetration is reduced by phytoplankton, whose biomass is affected by nutrient runoff from waste-water treatment plants as well as nutrient runoff, especially form agricultural land. Light penetration is also affected by runoff of chemical constituents of terrestrial origin (humus). Seaweeds and kelp are also smothered by fast-growing opportunistic filamentous algae. A shallower lower growth limit, and a shift from perennial to opportunistic species, are therefore direct signals of eutrophication. 
 2. **Methods**:
-Both indicators come from the national monitoring programmes ØkoKyst and Ytre Oslofjord, and both are expressed as an Ecological Quality Ratio (EQR) between 0 and 1. HARD_001 scores the depth at which each of nine easily recognisable erect algae stops growing, against reference depths for the water type. HARD_002 averages a littoral species-composition index with a sublittoral score built from the depth limits of kelp and erect red algae and the depth extent of filamentous algal mats.
+Two indicators are documented here, because Norway uses two different indices: 1. HARD_001 is based on the lower growth limit index (MSMDI), used in the Skagerrak, where the littoral (tidal) zone is very narrow). It scores the depth at which each of nine easily recognisable erect algae stops growing against reference depths which depend on water type. HARD_002 is based on the combination index (Komboindeksen), which is used along the rest of the coast, where the littoral zone is much more extensive). It averages a littoral species-composition index with a sublittoral score built from the depth limits of kelp and erect red algae, and the depth extent of filamentous algal mats. The indicators come from the national monitoring programmes ØkoKyst and Ytre Oslofjord which are part of Norway's obligations undet he Water Framework Directive (WFD), and both are expressed as an Ecological Quality Ratio (EQR) between 0 and 1. 
 3. **Interpretation**:
-An indicator value of 1 means the macroalgal community extends as deep, and is composed as expected, under minimal human influence. Values decreasing toward zero mean algae are confined to progressively shallower water and opportunistic species take over. Values above 0.6 correspond to "good" or better ecological status under the Water Framework Directive.
+An indicator value of 1 means the macroalgal community is minimally affected by human influence. Values decreasing toward zero mean algae are confined to progressively shallower water and opportunistic species take over. Values above 0.6 correspond to "good" or better ecological status under the Water Framework Directive.
 4. **Results and development needs**:
-Most stations are in "good" condition, with a tendency toward lower values in 2024 than in 2021–2022. Both indicators are operational but incomplete. HARD_002 rests on only two of its three prescribed sublittoral sub-parameters, because the third is not reported to the national database. Neither indicator can yet be aggregated to water body for the whole station network. For HARD_001 the same station-year can carry two different official values depending on how far back the historical species record reaches; a revision of the calculation methodology is in preparation, and until it lands the longer time series should not be treated as method-consistent.
+Most stations are above 0.8 (thus in "good" condition in WFD terms), with a tendency toward lower values in 2024 than in 2021–2022. Both indicators are operational but incomplete. HARD_002 rests on only two of its three prescribed sublittoral sub-parameters, because the third is not reported to the national database. Neither indicator can yet be aggregated to water body for the whole station network. For HARD_001 the same station-year can carry two different official values depending on how far back the historical species record reaches; a revision of the calculation methodology is in preparation, and until it lands the longer time series should not be treated as method-consistent.
 
 ## 2. About the underlying data
 
 <!--# Give a general introduction the datasets you have used, and provide more specific details in the sub-chapters.  -->
 
-The data come from two national monitoring programmes: **ØkoKyst** (*Økosystemovervåking i kystvann*, activity code `OEKK`), run for the Norwegian Environment Agency, and **Ytre Oslofjord** (`YOFJ`), run for Fagrådet for Ytre Oslofjord. Both survey fixed hard-bottom stations along the coast, and both report to the national database **Vannmiljø**.
+The data come from two national monitoring programmes: **ØkoKyst** (*Økosystemovervåking i kystvann*, activity code `OEKK`), run for the Norwegian Environment Agency, and **Ytre Oslofjord** (`YOFJ`), run for Fagrådet for Ytre Oslofjord. Both survey fixed hard-bottom stations along the coast and report to the national database **Vannmiljø**.  
 
 Not everything the two indices need is in Vannmiljø, so three sources are combined:
 
@@ -236,26 +236,25 @@ Not everything the two indices need is in Vannmiljø, so three sources are combi
 |---|---|
 | Vannmiljø registration export | raw species and depth registrations, plus the reported littoral index (RSLA/RSL) and, for Ytre Oslofjord, the reported MSMDI |
 | ØkoKyst regional report tables for 2024 | the sublittoral sub-parameters of Komboindeksen, which are absent from Vannmiljø, and the MSMDI time series for the Skagerrak |
-| ØkoKyst station overview 2026–2030 | water body (*vannforekomst*) per station, which the Vannmiljø export does not carry |
+| ØkoKyst station overview | water body (*vannforekomst*) per station, which the Vannmiljø export does not carry |
 
 ### 2.1 Spatial and temporal resolution and extent
 
-The observational unit is the **monitoring station** — a stretch of shore of 8–15 m for the littoral survey, and a dive or camera transect running from the shoreline down to about 30 m for the sublittoral survey. Stations are revisited, so each station contributes one index value per survey year.
+The observational unit is the monitoring station — a stretch of shore of 8–15 m for the littoral survey, and a dive or camera transect running from the shoreline down to about 30 m for the sublittoral survey. Stations are revisited, so each station contributes one index value per survey year.
 
-Temporal extent is **2021–2024**, chosen to match the current programme period. HARD_001 covers 33 Skagerrak stations over four years, 83 station-years in all. HARD_002 covers 18 surveyed stations from Nordsjøen to Barentshavet, of which 13 yield a value, and only for 2024, since the sublittoral sub-parameters were obtained for that year alone.
+We have focused on 2024, as that is the last year covered in published reports. We have looked at Vannmiljø data exported for 2021–2024, chosen to match the start of the current programme period (2021-2025). HARD_001 covers 33 Skagerrak stations over four years, 83 station-years in all. HARD_002 covers 18 surveyed stations from Nordsjøen to Barentshavet covers only for 2024 (sublittoral sub-parameters were obtained for only that year).
 
 The Skagerrak report tabulates MSMDI back to 2009, but the series is deliberately cut at 2021 rather than extended. @lundsor2025 document that the 2021–2024 values are computed by the current method, while earlier years come from a mix of sources and two different calculation conventions — some from individual annual reports, some from manual registrations in Vannmiljø that probably used a three-year lookback, one value corrected for a reporting error, and the 2009–2016 values from a later recalculation. Splicing those together would produce an apparent trend that partly reflects changes in method rather than in condition.
 
 ### 2.2 Sampling design
 
-Stations are placed on continuous hard bottom (bedrock or stable boulder), sloping evenly to 30 m or more, and areas with conspicuous ice or sand scouring are avoided. This is a **targeted, not a probabilistic, design**: stations are chosen to be representative of a water body and to be comparable between years, not drawn at random. Two consequences matter for interpretation:
+Stations are placed on continuous hard bottom (bedrock or stable boulder), sloping evenly to 30 m or more, and areas with conspicuous ice or sand scouring are avoided. This is a targeted design where stations are deliberately chosen to be representative of a water body and to be comparable between years, not drawn at random. 
 
-- Station values should not be read as an unbiased sample of hard bottom in general. They describe the surveyed localities.
-- Because suitable substrate is a selection criterion, stations where the seabed turns to soft sediment before light becomes limiting are excluded, which is why some stations in this dataset have no sublittoral value at all.
-
-The littoral survey is done by snorkelling between mid and high tide, recording all attached macroalgae on a six-point cover scale. The sublittoral survey is done by **diving** for MSMDI — a drop camera is explicitly not accepted, because several of the nine index species cannot be identified reliably from video — and by **ROV or drop camera** for Komboindeksen, with 3–5 replicate transects per station.
+The littoral survey for HARD_002 is done by snorkelling between mid and high tide, recording all attached macroalgae on a six-point cover scale. The sublittoral survey is done by diving for MSMDI — a drop camera is explicitly not accepted, because several of the nine index species cannot be identified reliably from video — and by ROV or drop camera for Komboindeksen, with 3–5 replicate transects per station.
 
 ### 2.3 Original units
+
+The measurement of parameters and the calculation of indices are described in *Veileder 02:2018* [@veileder022018], the monitoring guidelines for Norwegian monitoring under the EU Water Framework Directive. The MSMDI index (HARD_001) is a formal classification tool described in the monitoring guidelines, and so is the littoral index (fjæreindeksen), which is half of the komboindeks. The komboindels itself is not yet a formal classification tool. 
 
 | Variable | Original unit |
 |---|---|
@@ -273,10 +272,8 @@ The values taken from the ØkoKyst 2024 regional reports are not in a machine-re
 
 ### 2.5 Additional comments about the dataset
 
-Two quirks of the Vannmiljø export are worth knowing, because both would silently corrupt an analysis:
-
-- **Index values are duplicated.** Each station-year carries the index twice, once rounded with `Provetakmetode_id = "NS-EN ISO 19493:2007 SO"` (or `... NV` for lower growth limits) and once unrounded with method `UKJENT`. The two sometimes differ by more than rounding. We use the rounded record, falling back to the unrounded one rounded to two decimals where no rounded record exists.
-- **`Vannlokalitet_kode`, not the station name, is the key.** Several names occur under two different codes, and the short station code `Betegnelse` is missing for most Ytre Oslofjord records.
+- Index values are often duplicated. Each station-year often carries the index twice, once rounded with `Provetakmetode_id = "NS-EN ISO 19493:2007 SO"` (or `... NV` for lower growth limits) and once unrounded with method `UKJENT`. The two sometimes differ by more than rounding. We use the rounded record, falling back to the unrounded one rounded to two decimals where no rounded record exists.
+- `Vannlokalitet_kode`, not the station name, is the key, as the station name can vary slightly in spellin. Also, the same station name can occur under two different codes, and the short station code `Betegnelse` is missing for most Ytre Oslofjord records.
 
 ## 3. Indicator properties
 
@@ -284,7 +281,7 @@ Two quirks of the Vannmiljø export are worth knowing, because both would silent
 
 Both indicators are assigned to **B2 – Structural state characteristics**. What they measure is the vertical extent of the macroalgal community: how far down the seabed the perennial algae reach. That is a structural property of the habitat rather than a chemical or functional one.
 
-The assignment is not perfectly clean for HARD_002. Half of Komboindeksen is the littoral index RSLA/RSL, which scores species composition — proportions of green, red and brown algae, and the ratio of perennial to opportunistic species — and that half would sit more naturally in **B1 – Compositional state characteristics**. We classify the combined indicator by its sublittoral half and by the pressure it is designed to detect.
+The assignment is not perfectly clean for HARD_002. Half of Komboindeksen is the littoral index RSLA/RSL, which scores species composition — proportions of green, red and brown algae, and the ratio of perennial to opportunistic species — and that half would sit more naturally in B1 – Compositional state characteristics. We classify the combined indicator by its sublittoral half and by the pressure it is designed to detect.
 
 ### 3.1.1 Other condition typologies
 
@@ -296,15 +293,15 @@ Depth extent of perennial macroalgae.
 
 ### 3.3 Collinearities with other indicators
 
-Both indicators respond to light attenuation, so they are expected to correlate with any indicator built on **Secchi depth, chlorophyll *a*, or total nitrogen and phosphorus** in coastal water. Including one of those alongside these indicators in the same assessment would double-count the eutrophication signal.
+Both indicators respond to light attenuation, so they are expected to correlate with any indicator built on Secchi depth, chlorophyll *a*, or total nitrogen and phosphorus in coastal water. Including one of those alongside these indicators in the same assessment would double-count the eutrophication signal.
 
-There is also a partial overlap **between the two indicators documented here**. HARD_002's sublittoral half uses the lower growth limit of erect red algae and kelp, which is the same class of measurement as HARD_001. They are not collinear in practice only because they apply to different ecoregions and are never computed for the same station.
+There is also a partial overlap between the two indicators documented here. HARD_002's sublittoral half uses the lower growth limit of erect red algae and kelp, which is the same class of measurement as HARD_001. They are not collinear in practice only because they apply to different ecoregions and are never computed for the same station.
 
 A weaker overlap exists with eelgrass indicators, which respond to the same pressure through the same mechanism but on soft bottom.
 
 ### 3.4 Impact factors
 
-The pressure the indices are designed for is **eutrophication**: nutrient inputs from agriculture, aquaculture, and wastewater reduce light by increasing plankton biomass and by promoting filamentous algal mats that overgrow perennial species.
+The pressure the indices are designed for is eutrophication: nutrient inputs from agriculture, aquaculture, and wastewater reduce light by increasing plankton biomass and by promoting filamentous algal mats that overgrow perennial species.
 
 Several other factors change the metric without being eutrophication, and this is the main interpretive difficulty:
 
@@ -315,7 +312,7 @@ Several other factors change the metric without being eutrophication, and this i
 
 ### 3.5 Spatial aggregation
 
-The reporting unit is the **monitoring station in a given year**, and no spatial averaging is applied to produce it. Within a station-year the aggregation pathway is *Scale – Aggregate (arithmetic mean)*:
+The reporting unit is the monitoring station in a given year, and no spatial averaging is applied to produce it. Within a station-year the aggregation pathway is *Scale – Aggregate (arithmetic mean)*:
 
 - the observed variable (a depth in metres, or a depth extent in metres) is **scaled** against water-type-specific reference levels to a points score, and divided by the reference score of 5 to give a sub-parameter EQR;
 - sub-parameter EQRs are **aggregated** by unweighted arithmetic mean — over the nine species for HARD_001, and over three sublittoral sub-parameters and then the two index halves for HARD_002.
@@ -324,8 +321,7 @@ No transformation and no truncation are applied; the point scale bounds the resu
 
 *Veileder 02:2018* defines a further step we do **not** take: the normalised EQR of a **water body** is the mean of its station EQRs. We stop at the station because the Vannmiljø export carries no water body identifier. `data/station_waterbody.csv` supplies one for the ØkoKyst stations, but not for the 17 Ytre Oslofjord stations, so a complete water-body series is not yet possible (§5.1).
 
-## 4. Reference condition and levels
-
+## 4. Reference
 ### 4.1 Reference condition
 
 The reference condition is the macroalgal community expected at a station of its water type under **minimal human influence**: perennial algae extending to the depth that natural light attenuation allows, a species composition dominated by late-successional perennials, and no mass occurrence of filamentous algae.
